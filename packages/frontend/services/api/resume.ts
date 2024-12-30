@@ -11,4 +11,9 @@ export const resumeApi = {
     apiClient<Resume[]>('/resumes', {
       method: 'GET',
     }),
+  search: (query: string) =>
+    apiClient<Resume[]>('/resumes/search', {
+      method: 'GET',
+      params: { query },
+    }),
 }; 

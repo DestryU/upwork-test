@@ -1,16 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useResumes } from '@/hooks/useResumes';
+import { useSearchResumes } from '@/hooks/useSearchResumes';
 import ResumeCard from '@/components/Card/ResumeCard';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useRouter } from 'next/navigation';
 
 export default function ResumesPage() {
-  const { resumes, isLoading, error, fetchResumes } = useResumes();
+  const router = useRouter();
+  const { resumes, isLoading = true, error: fetchError, fetchResumes } = useResumes();
+  const { searchResults, isSearching, handleSearch } = useSearchResumes();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchResumes();
   }, []);
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    handleSearch(query);
+  };
+
+  const displayedResumes = searchResults ?? resumes;
 
   if (isLoading) {
     return (
@@ -20,7 +35,7 @@ export default function ResumesPage() {
     );
   }
 
-  if (error) {
+  if (fetchError) {
     return (
       <div className="text-center text-red-500 py-8">
         Failed to load resumes. Please try again later.
@@ -32,17 +47,45 @@ export default function ResumesPage() {
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Byte-sized Resumes</h1>
       
-      {resumes.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">
-          No resumes found. Create your first resume!
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {resumes.map((resume) => (
-            <ResumeCard key={resume.id} resume={resume} />
-          ))}
+      {!isLoading && displayedResumes.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 space-y-4">
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            🍩 Oops! Seems like there are no byte-sized resumes to munch on...
+          </p>
+          <Button
+            onClick={() => router.push('/')}
+            className="mt-4"
+          >
+            Create your first byte-sized resume
+          </Button>
         </div>
-      )}
+      ) : (!isLoading && (
+        <>
+          {/* Search Input */}
+          <div className="relative mb-8">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {isSearching ? (
+                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              ) : (
+                <Search className="h-5 w-5 text-gray-400" />
+              )}
+            </div>
+            <Input
+              type="text"
+              placeholder="Search the mini resume you're looking for..."
+              className="pl-10 pr-10 w-full"
+              value={searchQuery}
+              onChange={handleSearchInput}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayedResumes.map((resume) => (
+              <ResumeCard key={resume.id} resume={resume} />
+            ))}
+          </div>
+        </>
+      ))}
     </div>
   );
 } 

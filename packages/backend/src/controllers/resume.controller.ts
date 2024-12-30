@@ -19,4 +19,18 @@ export const createResume = async (req: Request, res: Response) => {
     console.error('Error creating resume:', error);
     res.status(500).json({ error: 'Failed to create resume' });
   }
+};
+
+export const searchResumes = async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query;
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    const resumes = await resumeService.searchResumes(query);
+    res.json(resumes);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to search resumes' });
+  }
 }; 

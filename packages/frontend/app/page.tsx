@@ -1,3 +1,6 @@
+'use client'
+
+import ToastNotification from "@/components/Layout/ToastNotification";
 import MiniResumeForm from "@/modules/MiniResume/MiniResumeForm";
 
 export default function Home() {
@@ -9,6 +12,7 @@ export default function Home() {
           <MiniResumeForm />
         </div>
       </div>
+      <ToastNotification />
     </main>
   );
 }

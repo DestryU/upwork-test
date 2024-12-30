@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/TextArea";
 import { Badge } from "@/components/ui/Badge";
 import { ErrorText } from "@/components/ui/ErrorText";
+import { useResumeCreate } from "@/hooks/useResume";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 const skillsList = [
   "JavaScript",
@@ -78,6 +81,7 @@ type FormData = {
 export default function MiniResumeForm() {
   const [searchSkills, setSearchSkills] = useState("");
   const [isSkillsListOpen, setIsSkillsListOpen] = useState(false);
+  const { createResume, isLoading, error: submitError } = useResumeCreate();
 
   const {
     register,
@@ -86,6 +90,7 @@ export default function MiniResumeForm() {
     setValue,
     formState: { errors },
     clearErrors,
+    reset,
   } = useForm<FormData>({
     resolver: joiResolver(formSchema),
     defaultValues: {
@@ -103,9 +108,23 @@ export default function MiniResumeForm() {
     skill.toLowerCase().includes(searchSkills.toLowerCase())
   );
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    // Handle form submission
+  const onSubmit = async (data: FormData) => {
+    try {
+      const result = await createResume(data);
+      toast.success('Resume submitted successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      
+      // Reset form
+      reset();
+    } catch (error) {
+      console.error('Error submitting resume:', error);
+    }
   };
 
   return (
@@ -227,8 +246,19 @@ export default function MiniResumeForm() {
         )}
       </div>
 
-      <Button type="submit" variant="default" className="w-full">
-        Submit
+      {submitError && (
+        <ErrorText className="mt-4">
+          {submitError.message || 'Failed to submit resume. Please try again.'}
+        </ErrorText>
+      )}
+
+      <Button 
+        type="submit" 
+        variant="default" 
+        className="w-full"
+        disabled={isLoading}
+      >
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Submit'}
       </Button>
     </form>
   );

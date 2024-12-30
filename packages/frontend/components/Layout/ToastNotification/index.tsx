@@ -15,16 +15,12 @@ const toastOpts: ToastContainerProps = {
   rtl: false,
   pauseOnFocusLoss: false,
   draggable: true,
-  pauseOnHover: false,
+  pauseOnHover: true,
   theme: "light",
 };
 
 export default function ToastNotification() {
   const pathname = usePathname();
-
-  const basePath = pathname.split("/")[1];
-
-  useEffect(() => toast.dismiss(), [basePath]);
 
   return <ToastContainer {...toastOpts} />;
 }

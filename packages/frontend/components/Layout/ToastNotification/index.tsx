@@ -1,8 +1,6 @@
 'use client'
 
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { toast, ToastContainer, ToastContainerProps } from "react-toastify";
+import { ToastContainer, ToastContainerProps } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,7 +18,6 @@ const toastOpts: ToastContainerProps = {
 };
 
 export default function ToastNotification() {
-  const pathname = usePathname();
 
   return <ToastContainer {...toastOpts} />;
 }

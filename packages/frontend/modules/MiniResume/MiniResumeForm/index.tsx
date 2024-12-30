@@ -125,122 +125,129 @@ export default function MiniResumeForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <label htmlFor="fullName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Full Name
-        </label>
-        <Input
-          id="fullName"
-          placeholder="John Doe"
-          {...register("fullName")}
-        />
-        {errors.fullName && (
-          <ErrorText>{errors.fullName.message}</ErrorText>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Email
-        </label>
-        <Input
-          id="email"
-          placeholder="john@example.com"
-          {...register("email")}
-        />
-        {errors.email && (
-          <ErrorText>{errors.email.message}</ErrorText>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="githubUrl" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          GitHub URL
-        </label>
-        <Input
-          id="githubUrl"
-          placeholder="https://github.com/username"
-          {...register("githubUrl")}
-        />
-        {errors.githubUrl && (
-          <ErrorText>{errors.githubUrl.message}</ErrorText>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Skills
-        </label>
+    <form 
+      onSubmit={handleSubmit(onSubmit)} 
+      className="space-y-4 w-full sm:max-w-2xl sm:mx-auto"
+    >
+      <div className="space-y-6 w-full">
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search skills..."
-              value={searchSkills}
-              onChange={(e) => setSearchSkills(e.target.value)}
-              onFocus={() => setIsSkillsListOpen(true)}
-              className="w-full"
-            />
-            {isSkillsListOpen && filteredSkills.length > 0 && (
-              <ul className="absolute z-10 w-full mt-1 max-h-60 overflow-auto rounded-md border border-input bg-white shadow-md">
-                {filteredSkills.map((skill) => (
-                  <li
-                    key={skill}
-                    className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                    onClick={() => {
-                      if (!selectedSkills.includes(skill)) {
-                        setValue("skills", [...selectedSkills, skill]);
-                        if (selectedSkills.length === 0) {
-                          clearErrors("skills");
+          <label htmlFor="fullName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Full Name
+          </label>
+          <Input
+            id="fullName"
+            placeholder="John Doe"
+            className="w-full"
+            {...register("fullName")}
+          />
+          {errors.fullName && (
+            <ErrorText>{errors.fullName.message}</ErrorText>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Email
+          </label>
+          <Input
+            id="email"
+            placeholder="john@example.com"
+            {...register("email")}
+          />
+          {errors.email && (
+            <ErrorText>{errors.email.message}</ErrorText>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="githubUrl" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            GitHub URL
+          </label>
+          <Input
+            id="githubUrl"
+            placeholder="https://github.com/username"
+            {...register("githubUrl")}
+          />
+          {errors.githubUrl && (
+            <ErrorText>{errors.githubUrl.message}</ErrorText>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Skills
+          </label>
+          <div className="space-y-2">
+            <div className="relative w-full">
+              <Input
+                type="text"
+                placeholder="Search skills..."
+                value={searchSkills}
+                onChange={(e) => setSearchSkills(e.target.value)}
+                onFocus={() => setIsSkillsListOpen(true)}
+                className="w-full"
+              />
+              {isSkillsListOpen && filteredSkills.length > 0 && (
+                <ul className="absolute z-10 w-full mt-1 max-h-48 sm:max-h-60 overflow-auto rounded-md border border-input bg-white shadow-md">
+                  {filteredSkills.map((skill) => (
+                    <li
+                      key={skill}
+                      className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                      onClick={() => {
+                        if (!selectedSkills.includes(skill)) {
+                          setValue("skills", [...selectedSkills, skill]);
+                          if (selectedSkills.length === 0) {
+                            clearErrors("skills");
+                          }
                         }
-                      }
-                      setSearchSkills("");
-                      setIsSkillsListOpen(false);
+                        setSearchSkills("");
+                        setIsSkillsListOpen(false);
+                      }}
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedSkills.map((skill) => (
+                <Badge key={skill} className="text-sm">
+                  {skill}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-4 w-4 p-0 ml-1"
+                    onClick={() => {
+                      const newSkills = selectedSkills.filter((s) => s !== skill);
+                      setValue("skills", newSkills);
                     }}
                   >
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            )}
+                    x
+                  </Button>
+                </Badge>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {selectedSkills.map((skill) => (
-              <Badge key={skill}>
-                {skill}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-4 w-4 p-0 ml-2"
-                  onClick={() => {
-                    const newSkills = selectedSkills.filter((s) => s !== skill);
-                    setValue("skills", newSkills);
-                  }}
-                >
-                  x
-                </Button>
-              </Badge>
-            ))}
-          </div>
+          {errors.skills && selectedSkills.length === 0 && (
+            <ErrorText>{errors.skills.message}</ErrorText>
+          )}
         </div>
-        {errors.skills && selectedSkills.length === 0 && (
-          <ErrorText>{errors.skills.message}</ErrorText>
-        )}
-      </div>
 
-      <div className="space-y-2">
-        <label htmlFor="funFact" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Fun Fact
-        </label>
-        <Textarea
-          id="funFact"
-          placeholder="Share something interesting about yourself..."
-          {...register("funFact")}
-        />
-        {errors.funFact && (
-          <ErrorText>{errors.funFact.message}</ErrorText>
-        )}
+        <div className="space-y-2">
+          <label htmlFor="funFact" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Fun Fact
+          </label>
+          <Textarea
+            id="funFact"
+            placeholder="Share something interesting about yourself..."
+            className="w-full"
+            {...register("funFact")}
+          />
+          {errors.funFact && (
+            <ErrorText>{errors.funFact.message}</ErrorText>
+          )}
+        </div>
       </div>
 
       {submitError && (
@@ -252,7 +259,7 @@ export default function MiniResumeForm() {
       <Button 
         type="submit" 
         variant="default" 
-        className="w-full"
+        className="w-full mt-6"
         disabled={isLoading}
       >
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Submit'}

@@ -3,7 +3,7 @@
 import * as React from "react";
 import classNames from "classnames";
 
-interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {}
+type BadgeProps = React.HTMLAttributes<HTMLDivElement>;
 
 function Badge({ 
   className, 

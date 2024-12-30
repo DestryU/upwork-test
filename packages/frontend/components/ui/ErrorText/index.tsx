@@ -3,20 +3,20 @@
 import * as React from "react";
 import classNames from "classnames";
 
-interface ErrorTextProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+type ErrorTextProps = React.HTMLAttributes<HTMLParagraphElement>;
 
-function ErrorText({ className, ...props }: ErrorTextProps) {
-  const styles = "text-sm font-medium text-red-500";
+const ErrorText = React.forwardRef<HTMLParagraphElement, ErrorTextProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <p
+        ref={ref}
+        className={classNames("text-sm text-red-500", className)}
+        {...props}
+      />
+    );
+  }
+);
 
-  return (
-    <p 
-      className={classNames(
-        styles,
-        className
-      )} 
-      {...props} 
-    />
-  );
-}
+ErrorText.displayName = "ErrorText";
 
 export { ErrorText }; 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { resumeApi, CreateResumeData } from '@/services/api/resume';
-import { Resume } from '@/types/resume';
+import { resumeApi } from '@/services/api/resume';
+import { CreateResumeData, Resume } from '@/types/resume';
 
 interface UseResumeCreate {
   isLoading: boolean;

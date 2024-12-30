@@ -12,6 +12,7 @@ import { ErrorText } from "@/components/ui/ErrorText";
 import { useResumeCreate } from "@/hooks/useResume";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const skillsList = [
   "JavaScript",
@@ -79,6 +80,7 @@ type FormData = {
 };
 
 export default function MiniResumeForm() {
+  const router = useRouter();
   const [searchSkills, setSearchSkills] = useState("");
   const [isSkillsListOpen, setIsSkillsListOpen] = useState(false);
   const { createResume, isLoading, error: submitError } = useResumeCreate();
@@ -111,19 +113,14 @@ export default function MiniResumeForm() {
   const onSubmit = async (data: FormData) => {
     try {
       const result = await createResume(data);
-      toast.success('Resume submitted successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.success('Resume submitted successfully!');
       
-      // Reset form
+      // Reset form and navigate
       reset();
+      router.push('/resumes');
     } catch (error) {
       console.error('Error submitting resume:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to submit resume');
     }
   };
 
